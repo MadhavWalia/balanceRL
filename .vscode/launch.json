@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run benchmark.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/benchmark.py",
+            "args": [
+                "--algorithms", "q_learning", "td_learning", "sarsa",
+                "--n-episodes", "1000",
+                "--n-runs", "5"
+            ],
+            "console": "integratedTerminal"
+        }
+    ]
+}
