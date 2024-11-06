@@ -15,6 +15,7 @@ from environment.client import Client
 
 from agents.base import BaseAgent
 from agents.q_learning import QLearningAgent
+from agents.sarsa import SARSAAgent
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -85,6 +86,8 @@ class Benchmark:
         """Initialize agent based on algorithm name."""
         if algorithm == "q_learning":
             return QLearningAgent(n_servers=self.n_servers)
+        elif algorithm == "sarsa":
+            return SARSAAgent(n_servers=self.n_servers)
 
         raise ValueError(f"Unknown algorithm: {algorithm}")
 
@@ -148,7 +151,11 @@ class Benchmark:
                             if request:
                                 action = agent.select_action(state)
                                 next_state, reward, done, _ = env.step(action)
-                                agent.update(state, action, reward, next_state, done)
+                                if algorithm == "q_learning":
+                                    agent.update(state, action, reward, next_state, done)
+                                elif algorithm == "sarsa":
+                                    next_action = agent.select_action(next_state)
+                                    agent.update(state, action, reward, next_state, done, next_action)
                                 state = next_state
                             
                             t += 1
