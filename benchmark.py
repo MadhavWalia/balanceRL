@@ -16,6 +16,7 @@ from environment.client import Client
 from agents.base import BaseAgent
 from agents.q_learning import QLearningAgent
 from agents.sarsa import SARSAAgent
+from agents.ppo import PPOAgent
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -88,6 +89,8 @@ class Benchmark:
             return QLearningAgent(n_servers=self.n_servers)
         elif algorithm == "sarsa":
             return SARSAAgent(n_servers=self.n_servers)
+        elif algorithm == "ppo":
+            return PPOAgent(n_servers=self.n_servers)
 
         raise ValueError(f"Unknown algorithm: {algorithm}")
 
@@ -156,10 +159,15 @@ class Benchmark:
                                 elif algorithm == "sarsa":
                                     next_action = agent.select_action(next_state)
                                     agent.update(state, action, reward, next_state, done, next_action)
+                                elif algorithm == "ppo":
+                                    state_value = agent.update_value_estimate(state)
+                                    agent.store_transition(reward, state_value)
                                 state = next_state
                             
                             t += 1
-                    
+                        # For PPO, update the policy after the episode ends
+                        if algorithm == "ppo":
+                            agent.end_episode()
                     # Evaluation phase
                     eval_metrics = self.run_single_evaluation(
                         agent, env, client, scenario.duration
