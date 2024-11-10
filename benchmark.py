@@ -17,7 +17,11 @@ from agents.base import BaseAgent
 from agents.q_learning import QLearningAgent
 from agents.sarsa import SARSAAgent
 from agents.ppo import PPOAgent
-
+from agents.actor_critic import ActorCriticAgent
+from agents.dyna_q import DynaQAgent
+from agents.dqn import DQNAgent
+from agents.round_robin import RoundRobinAgent
+ 
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -91,6 +95,15 @@ class Benchmark:
             return SARSAAgent(n_servers=self.n_servers)
         elif algorithm == "ppo":
             return PPOAgent(n_servers=self.n_servers)
+        elif algorithm == "actor_critic":
+            return ActorCriticAgent(n_servers=self.n_servers)
+        elif algorithm == "dyna_q":
+            return DynaQAgent(n_servers=self.n_servers)
+        elif algorithm == "dqn":
+            state_dim = self.n_servers
+            return DQNAgent(n_servers=self.n_servers, state_dim = state_dim)
+        elif algorithm == "round_robin":
+            return RoundRobinAgent(n_servers=self.n_servers)
 
         raise ValueError(f"Unknown algorithm: {algorithm}")
 
